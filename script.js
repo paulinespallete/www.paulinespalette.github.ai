@@ -128,14 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Get form data
             const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
-            
             const submitBtn = contactForm.querySelector('button[type="submit"]');
             const originalContent = submitBtn.innerHTML;
             
@@ -161,21 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             document.head.appendChild(style);
             
-            // Create mailto link and open it
-            const mailtoSubject = encodeURIComponent(`[${subject}] Message from ${name}`);
-            const mailtoBody = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`);
-            const mailtoLink = `mailto:paulinesherry329@hotmail.com?subject=${mailtoSubject}&body=${mailtoBody}`;
-            
-            // Open email client - using window.open for better compatibility
-            try {
-                window.open(mailtoLink, '_blank');
-            } catch (error) {
-                // Fallback for browsers that block window.open
-                window.location.href = mailtoLink;
-            }
-            
+            // Show success message after form submission
             setTimeout(() => {
-                // Show confirmation message with sender's name
                 submitBtn.innerHTML = `
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="20 6 9 17 4 12"/>
