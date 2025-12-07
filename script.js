@@ -158,16 +158,17 @@ document.addEventListener('DOMContentLoaded', () => {
             document.head.appendChild(style);
             
             try {
-                // Submit form data via AJAX
+                // Submit form data to Formspree without redirect
                 const formData = new FormData(contactForm);
-                const response = await fetch('send-email.php', {
+                const response = await fetch('https://formspree.io/f/xqardadd', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
                 });
                 
-                const result = await response.json();
-                
-                if (result.success) {
+                if (response.ok) {
                     // Show success message
                     submitBtn.innerHTML = `
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -177,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     submitBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
                     
-                    // Show success message
+                    // Show success message in page (no alert popup)
                     formMessage.style.display = 'block';
                     formMessage.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
                     formMessage.style.color = 'white';
@@ -192,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         formMessage.style.display = 'none';
                     }, 5000);
                 } else {
-                    throw new Error(result.message || 'Form submission failed');
+                    throw new Error('Form submission failed');
                 }
             } catch (error) {
                 // Show error message
@@ -209,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formMessage.style.display = 'block';
                 formMessage.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
                 formMessage.style.color = 'white';
-                formMessage.textContent = 'Sorry, there was an error sending your message. Please try again or email directly at paulinesherry329@hotmail.com';
+                formMessage.textContent = 'Sorry, there was an error. Please try again or email paulinesherry329@hotmail.com directly.';
                 
                 setTimeout(() => {
                     submitBtn.innerHTML = originalContent;
