@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pauline's Palette | Puppet Artist & Illustrator</title>
+    <meta name="description" content="Handcrafted story puppets and whimsical illustrations. Bringing tales to life through art.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===== INTRO ANIMATION STYLES ===== */
+        .intro-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1500px;
+            background: linear-gradient(135deg, #2d2438 0%, #1e1a26 100%);
+        }
+
+        .intro-overlay.hidden {
+            display: none !important;
+        }
+
+        .theater-frame {
+            position: absolute;
+            inset: 0;
+            border: 25px solid #3d2d48;
+            border-image: linear-gradient(180deg, #5a4868 0%, #3d2d48 50%, #2d1d38 100%) 1;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .theater-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(180deg, #4a3858 0%, #3d2d48 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 15;
+        }
+
+        .theater-top::before,
+        .theater-top::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #5a4868, #3d2d48);
+            border-radius: 50%;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.5);
+        }
+
+        .theater-top::before { left: 40px; }
+        .theater-top::after { right: 40px; }
+
+        .theater-title {
+            font-family: 'Lucida Handwriting', 'Ink Free', 'Caveat', cursive;
+            font-size: clamp(24px, 5vw, 48px);
+            color: #f0a7c1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 4px;
+        }
+
+        .stage-lights {
+            position: absolute;
+            top: 100px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            z-index: 5;
+            padding: 0 100px;
+        }
+
+        .light {
+            width: 20px;
+            height: 30px;
+            background: #3d2d48;
+            border-radius: 5px 5px 50% 50%;
+            position: relative;
+        }
+
+        .light::after {
+            content: '';
+            position: absolute;
+            bottom: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 200px;
+            background: radial-gradient(ellipse at top, rgba(217,115,152,0.35) 0%, transparent 70%);
+            opacity: 0;
+            animation: lightFlicker 3s ease-in-out infinite;
+        }
+
+        .light:nth-child(1)::after { animation-delay: 0s; }
+        .light:nth-child(2)::after { animation-delay: 0.5s; }
+        .light:nth-child(3)::after { animation-delay: 1s; }
+        .light:nth-child(4)::after { animation-delay: 1.5s; }
+        .light:nth-child(5)::after { animation-delay: 2s; }
+
+        @keyframes lightFlicker {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .curtains-container {
+            position: absolute;
+            inset: 80px 25px 25px 25px;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .curtain {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 2s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        .curtain-left {
+            transform-origin: left center;
+            background: linear-gradient(90deg, 
+                #7a5d94 0%, 
+                #9b7ab8 20%, 
+                #8a6aa8 40%, 
+                #7a5d94 60%,
+                #6a4d84 80%,
+                #5a3d74 100%
+            );
+        }
+
+        .curtain-right {
+            transform-origin: right center;
+            background: linear-gradient(270deg, 
+                #7a5d94 0%, 
+                #9b7ab8 20%, 
+                #8a6aa8 40%, 
+                #7a5d94 60%,
+                #6a4d84 80%,
+                #5a3d74 100%
+            );
+        }
+
+        .curtain::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(90deg,
+                transparent 0px,
+                rgba(0,0,0,0.1) 10px,
+                transparent 20px,
+                rgba(255,255,255,0.05) 30px,
+                transparent 40px
+            );
+        }
+
+        .curtain::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(180deg,
+                rgba(0,0,0,0.4) 0%,
+                rgba(122,93,148,0.6) 30%,
+                transparent 100%
+            );
+        }
+
+        .curtain-left::before {
+            border-right: 3px solid #d97398;
+            box-shadow: inset -5px 0 20px rgba(0,0,0,0.3);
+        }
+
+        .curtain-right::before {
+            border-left: 3px solid #d97398;
+            box-shadow: inset 5px 0 20px rgba(0,0,0,0.3);
+        }
+
+        .tassel {
+            position: absolute;
+            bottom: 30%;
+            width: 40px;
+            height: 80px;
+            z-index: 5;
+        }
+
+        .tassel-left { right: 20px; }
+        .tassel-right { left: 20px; }
+
+        .tassel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #f0a7c1, #d97398, #c45a80);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .tassel::after {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(180deg, #d97398 0%, #c45a80 50%, #a04870 100%);
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .intro-overlay.open .curtain-left {
+            transform: rotateY(-85deg) translateX(-20%);
+        }
+
+        .intro-overlay.open .curtain-right {
+            transform: rotateY(85deg) translateX(20%);
+        }
+
+        .intro-overlay.open {
+            animation: fadeOutOverlay 1s ease-out 2s forwards;
+        }
+
+        @keyframes fadeOutOverlay {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        .welcome-text {
+            position: absolute;
+            z-index: 3;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1s ease-out 0.5s;
+        }
+
+        .intro-overlay.open .welcome-text {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .welcome-text h1 {
+            font-family: 'Lucida Handwriting', 'Ink Free', 'Caveat', cursive;
+            font-size: clamp(36px, 8vw, 72px);
+            color: #fef8f3;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+
+        .welcome-text p {
+            font-size: clamp(16px, 3vw, 24px);
+            color: #f0a7c1;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .skip-btn {
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+            padding: 12px 24px;
+            background: transparent;
+            border: 2px solid rgba(217, 115, 152, 0.5);
+            color: #f0a7c1;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 20;
+        }
+
+        .skip-btn:hover {
+            background: rgba(217, 115, 152, 0.2);
+            border-color: #d97398;
+        }
+
+        .intro-overlay.open .skip-btn {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Hide main content during intro */
+        body.intro-active {
+            overflow: hidden;
+        }
+
+        body.intro-active .main-nav,
+        body.intro-active .hero,
+        body.intro-active .projects,
+        body.intro-active .about,
+        body.intro-active .skills,
+        body.intro-active .testimonials,
+        body.intro-active .contact,
+        body.intro-active .footer {
+            opacity: 0;
+        }
+
+        body:not(.intro-active) .main-nav,
+        body:not(.intro-active) .hero,
+        body:not(.intro-active) .projects,
+        body:not(.intro-active) .about,
+        body:not(.intro-active) .skills,
+        body:not(.intro-active) .testimonials,
+        body:not(.intro-active) .contact,
+        body:not(.intro-active) .footer {
+            animation: fadeInContent 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeInContent {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .theater-top { height: 60px; }
+            .stage-lights { padding: 0 30px; top: 80px; }
+            .curtains-container { inset: 60px 15px 15px 15px; }
+            .skip-btn { bottom: 30px; right: 30px; padding: 10px 20px; font-size: 12px; }
+            .theater-top::before, .theater-top::after { width: 40px; height: 40px; bottom: -20px; }
+            .theater-top::before { left: 20px; }
+            .theater-top::after { right: 20px; }
+        }
+    </style>
+</head>
+<body class="intro-active">
+
+<!-- 3D INTRO OVERLAY -->
+<div class="intro-overlay" id="introOverlay">
+    <div class="theater-top">
+        <span class="theater-title">Pauline's Palette</span>
+    </div>
+    <div class="stage-lights">
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+    </div>
+    <div class="curtains-container">
+        <div class="curtain curtain-left">
+            <div class="tassel tassel-left"></div>
+        </div>
+        <div class="curtain curtain-right">
+            <div class="tassel tassel-right"></div>
+        </div>
+    </div>
+    <div class="welcome-text">
+        <h1>Welcome</h1>
+        <p>to my world of handcrafted wooden spoon characters</p>
+    </div>
+    <button class="skip-btn" onclick="skipIntro()">SKIP INTRO</button>
+</div>
+
+<!-- NAV -->
+<nav class="main-nav">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="#home">
+                <span class="logo-text">Pauline's</span>
+                <span class="logo-sub">Palette</span>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="#contact" class="btn btn-primary btn-sm">Commission Work</a>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu">
+    <ul class="mobile-nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</div>
+
+<!-- HERO -->
+<section id="home" class="hero">
+    <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-container">
+        <div class="hero-content">
+            <div class="hero-intro">
+                <span class="greeting">Welcome to my world of</span>
+                <h1 class="hero-title">Handcrafted<br>Story characters</h1>
+                <p class="hero-role"> Artist & Illustrator | Bearsden, Scotland</p>
+            </div>
+            <p class="hero-description">
+                I create whimsical characters and illustrations that bring beloved tales to life. 
+                Each piece is lovingly handcrafted using traditional techniques and sustainable materials.
+            </p>
+            <div class="hero-cta">
+                <a href="#gallery" class="btn btn-primary">Explore My Work</a>
+                <a href="#contact" class="btn btn-outline">Work With Me</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number" data-count="500">0</span>
+                    <span class="stat-label">Characters Created</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-count="25">0</span>
+                    <span class="stat-label">Years Crafting</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-count="50">0</span>
+                    <span class="stat-label">Collections</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-image-wrapper">
+                <div class="hero-image-frame">
+                    <img src="10.png" alt="Collection of handcrafted spoon puppets by Pauline " class="hero-img">
+                </div>
+                <div class="floating-card card-1">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                    </svg>
+                    <span>Hand Painted</span>
+                </div>
+                <div class="floating-card card-2">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                    <span>Made with Love</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="scroll-indicator">
+        <span>Scroll to explore</span>
+        <div class="scroll-arrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="projects">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">Portfolio</span>
+            <h2>My Creations</h2>
+            <p>A collection of handcrafted characters, illustrations, and magical characters brought to life.</p>
+        </div>
+        <div class="project-filters">
+            <button class="filter-btn active" data-filter="all">All Work</button>
+            <button class="filter-btn" data-filter="puppets">Story Characters</button>
+            <button class="filter-btn" data-filter="collections">Collections</button>
+        </div>
+        <div class="projects-grid">
+            <article class="project-card" data-category="puppets">
+                <div class="project-image">
+                    <img src="4.png" alt="Little Red Riding Hood puppet set - Huntsman, Wolf, Grandmother, and Little Red" class="project-img">
+                    <div class="project-overlay">
+                        <a href="#" class="project-link">View Details</a>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <span class="project-category">Story Characters</span>
+                    <h3>Fairy Tale Classics</h3>
+                    <p>Beloved characters from timeless stories, each hand-painted with intricate detail.</p>
+                    <div class="project-tech">
+                        <span>Hand-sewn</span>
+                        <span>Natural Fabrics</span>
+                        <span>4 Characters</span>
+                    </div>
+                </div>
+            </article>
+            <article class="project-card" data-category="puppets">
+                <div class="project-image">
+                    <img src="7.png" alt="Mouse and Fox spoon puppets" class="project-img">
+                    <div class="project-overlay">
+                        <a href="#" class="project-link">View Details</a>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <span class="project-category">Story Puppets</span>
+                    <h3>Woodland Wonderland</h3>
+                    <p>Charming forest creatures including mice, foxes, and woodland friends.</p>
+                    <div class="project-tech">
+                        <span>Spoon Characters</span>
+                        <span>Felt Details</span>
+                        <span>Googly Eyes</span>
+                    </div>
+                </div>
+            </article>
+            <article class="project-card" data-category="puppets">
+                <div class="project-image">
+                    <img src="5.png" alt="Three Little Pigs spoon puppets" class="project-img">
+                    <div class="project-overlay">
+                        <a href="#" class="project-link">View Details</a>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <span class="project-category">Story Characters</span>
+                    <h3>Nursery Rhyme Friends</h3>
+                    <p>The Three Little Pigs and other nursery rhyme favourites for early learning.</p>
+                    <div class="project-tech">
+                        <span>Spoon Characters</span>
+                        <span>Felt & Buttons</span>
+                        <span>3 Characters</span>
+                    </div>
+                </div>
+            </article>
+            <article class="project-card" data-category="collections">
+                <div class="project-image">
+                    <img src="3.png" alt="Barn Owl spoon puppet with cardboard wings" class="project-img">
+                    <div class="project-overlay">
+                        <a href="#" class="project-link">View Details</a>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <span class="project-category">Collections</span>
+                    <h3>Magical Creatures</h3>
+                    <p>Owls, mythical birds, and enchanting creatures with spread wings and googly eyes.</p>
+                    <div class="project-tech">
+                        <span>Cardboard Wings</span>
+                        <span>Hand-painted</span>
+                        <span>Unique Pieces</span>
+                    </div>
+                </div>
+            </article>
+            <article class="project-card" data-category="puppets">
+                <div class="project-image">
+                    <img src="6.png" alt="Little Red Riding Hood character spoon puppet close-up" class="project-img">
+                    <div class="project-overlay">
+                        <a href="#" class="project-link">View Details</a>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <span class="project-category">Story Characters</span>
+                    <h3>Character Close-ups</h3>
+                    <p>Detailed character  with yarn braids, felt hoods, and expressive faces.</p>
+                    <div class="project-tech">
+                        <span>Yarn Hair</span>
+                        <span>Felt Costume</span>
+                        <span>Button Details</span>
+                    </div>
+                </div>
+            </article>
+            <article class="project-card" data-category="collections">
+                <div class="project-image">
+                    <img src="2.png" alt="French sailor spoon puppet with striped shirt and beret" class="project-img">
+                    <div class="project-overlay">
+                        <a href="#" class="project-link">View Details</a>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <span class="project-category">Collections</span>
+                    <h3>Around the World</h3>
+                    <p>Cultural characters celebrating stories and traditions from around the globe.</p>
+                    <div class="project-tech">
+                        <span>Pipe Cleaner Arms</span>
+                        <span>Felt Clothes</span>
+                        <span>Button Details</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="projects-cta">
+            <a href="#" class="btn btn-outline">View Full Gallery</a>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about">
+    <div class="section-container">
+        <div class="about-grid">
+            <div class="about-image">
+                <div class="about-image-wrapper">
+                    <img src="4.png" alt="Complete collection of Pauline's handcrafted spoon puppets" class="about-img">
+                </div>
+                <div class="experience-badge">
+                    <span class="exp-number">25+</span>
+                    <span class="exp-text">Years Creating Magic</span>
+                </div>
+            </div>
+            <div class="about-content">
+                <span class="section-tag">About Me</span>
+                <h2>The Artist Behind<br>the Characters</h2>
+                <p class="about-lead">
+                    Hello! I'm Pauline, an artist and illustrator based in the beautiful Scotland.
+                </p>
+                <p>
+                    I am able to create established, popular characters, or customise them to create a whole new character.
+
+Each character takes time and effort to create, and my price reflects this. However, I would love to share my talent with you and bring joy to little faces!
+
+With this in mind, I am offering six characters for £30. Choose your characters, let me know any requirements you may have (hair colour, eye colour, etc.), and contact me.
+
+I look forward to hearing from you!
+                </p>
+                
+                <div class="about-highlights">
+                    <div class="highlight">
+                        <div class="highlight-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                        </div>
+                        <div class="highlight-content">
+                            <h4>Handcrafted with Care</h4>
+                            <p>Every stitch, every brushstroke is done by hand with attention to detail.</p>
+                        </div>
+                    </div>
+                    <div class="highlight">
+                        <div class="highlight-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                            </svg>
+                        </div>
+                        <div class="highlight-content">
+                            <h4>Eco-Friendly Materials</h4>
+                            <p>Sustainable fabrics, natural dyes, and recyclable packaging.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+                <a href="#contact" class="btn btn-primary">Contact me</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="skills">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">My Process</span>
+            <h2>How the Magic Happens</h2>
+            <p>From initial sketch to finished puppet, every creation follows a journey of craftsmanship.</p>
+        </div>
+        <div class="skills-grid process-grid">
+            <div class="skill-category process-step">
+                <div class="step-number">01</div>
+                <div class="skill-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                        <path d="M2 2l7.586 7.586"/>
+                    </svg>
+                </div>
+                <h3>Design & Sketch</h3>
+                <p>Every puppet begins as a pencil sketch, capturing character personality and movement possibilities.</p>
+            </div>
+            <div class="skill-category process-step">
+                <div class="step-number">02</div>
+                <div class="skill-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="6" cy="6" r="3"/>
+                        <path d="M6 9v12"/>
+                        <path d="M13 6l-4 6h9l-4 6"/>
+                    </svg>
+                </div>
+                <h3>Pattern & Cut</h3>
+                <p>Patterns are carefully drafted and premium fabrics are selected and cut with precision.</p>
+            </div>
+            <div class="skill-category process-step">
+                <div class="step-number">03</div>
+                <div class="skill-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                    </svg>
+                </div>
+                <h3>Stitch & Assemble</h3>
+                <p>Hand-stitching brings the puppet to life, with careful attention to durability and movement.</p>
+            </div>
+            <div class="skill-category process-step">
+                <div class="step-number">04</div>
+                <div class="skill-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <h3>Paint & Detail</h3>
+                <p>Faces are hand-painted with personality, and finishing touches like hair and accessories added.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">Kind Words</span>
+            <h2>What People Say</h2>
+            <p>Stories from families, teachers, and collectors who've welcomed my characters into their lives.</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="quote-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.192 15.757c0-.88-.23-1.618-.69-2.217-.326-.412-.768-.683-1.327-.812-.55-.128-1.07-.137-1.54-.028-.16-.95.1-1.956.76-3.022.66-1.065 1.515-1.867 2.558-2.403L9.373 5c-.8.396-1.56.898-2.26 1.505-.71.607-1.34 1.305-1.9 2.094s-.98 1.68-1.25 2.69-.346 2.04-.217 3.1c.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.003zm9.124 0c0-.88-.23-1.618-.69-2.217-.326-.42-.77-.692-1.327-.817-.56-.124-1.074-.13-1.54-.022-.16-.94.09-1.95.75-3.02.66-1.06 1.514-1.86 2.557-2.4L18.49 5c-.8.396-1.555.898-2.26 1.505-.708.607-1.34 1.305-1.894 2.094-.556.79-.97 1.68-1.24 2.69-.273 1-.345 2.04-.217 3.1.165 1.4.615 2.52 1.35 3.35.732.833 1.646 1.25 2.742 1.25.967 0 1.768-.29 2.402-.876.627-.576.942-1.365.942-2.368v.01z"/>
+                    </svg>
+                </div>
+                <p class="testimonial-text">
+                    "The fairy tale characters are absolutely magical! My daughter's face lit up when she saw them. 
+                    The craftsmanship is exceptional - true heirloom pieces."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <svg viewBox="0 0 40 40" fill="none">
+                            <circle cx="20" cy="20" r="20" fill="#fce7f3"/>
+                            <circle cx="20" cy="16" r="8" fill="#f472b6"/>
+                            <ellipse cx="20" cy="36" rx="12" ry="10" fill="#f472b6"/>
+                        </svg>
+                    </div>
+                    <div class="author-info">
+                        <h4>Sarah Mitchell</h4>
+                        <span>Mother of Two, Stirling</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card featured">
+                <div class="quote-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.192 15.757c0-.88-.23-1.618-.69-2.217-.326-.412-.768-.683-1.327-.812-.55-.128-1.07-.137-1.54-.028-.16-.95.1-1.956.76-3.022.66-1.065 1.515-1.867 2.558-2.403L9.373 5c-.8.396-1.56.898-2.26 1.505-.71.607-1.34 1.305-1.9 2.094s-.98 1.68-1.25 2.69-.346 2.04-.217 3.1c.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.003zm9.124 0c0-.88-.23-1.618-.69-2.217-.326-.42-.77-.692-1.327-.817-.56-.124-1.074-.13-1.54-.022-.16-.94.09-1.95.75-3.02.66-1.06 1.514-1.86 2.557-2.4L18.49 5c-.8.396-1.555.898-2.26 1.505-.708.607-1.34 1.305-1.894 2.094-.556.79-.97 1.68-1.24 2.69-.273 1-.345 2.04-.217 3.1.165 1.4.615 2.52 1.35 3.35.732.833 1.646 1.25 2.742 1.25.967 0 1.768-.29 2.402-.876.627-.576.942-1.365.942-2.368v.01z"/>
+                    </svg>
+                </div>
+                <p class="testimonial-text">
+                    "I use Pauline' characters in my classroom every day. The children are completely captivated! 
+                    They've transformed how I teach storytelling and literacy."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <svg viewBox="0 0 40 40" fill="none">
+                            <circle cx="20" cy="20" r="20" fill="#e0e7ff"/>
+                            <circle cx="20" cy="16" r="8" fill="#818cf8"/>
+                            <ellipse cx="20" cy="36" rx="12" ry="10" fill="#818cf8"/>
+                        </svg>
+                    </div>
+                    <div class="author-info">
+                        <h4>Emma Thompson</h4>
+                        <span>Primary School Teacher</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="quote-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.192 15.757c0-.88-.23-1.618-.69-2.217-.326-.412-.768-.683-1.327-.812-.55-.128-1.07-.137-1.54-.028-.16-.95.1-1.956.76-3.022.66-1.065 1.515-1.867 2.558-2.403L9.373 5c-.8.396-1.56.898-2.26 1.505-.71.607-1.34 1.305-1.9 2.094s-.98 1.68-1.25 2.69-.346 2.04-.217 3.1c.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.003zm9.124 0c0-.88-.23-1.618-.69-2.217-.326-.42-.77-.692-1.327-.817-.56-.124-1.074-.13-1.54-.022-.16-.94.09-1.95.75-3.02.66-1.06 1.514-1.86 2.557-2.4L18.49 5c-.8.396-1.555.898-2.26 1.505-.708.607-1.34 1.305-1.894 2.094-.556.79-.97 1.68-1.24 2.69-.273 1-.345 2.04-.217 3.1.165 1.4.615 2.52 1.35 3.35.732.833 1.646 1.25 2.742 1.25.967 0 1.768-.29 2.402-.876.627-.576.942-1.365.942-2.368v.01z"/>
+                    </svg>
+                </div>
+                <p class="testimonial-text">
+                    "As a collector of artisan characters, Pauline's work stands out. The attention to historical 
+                    accuracy in her Heritage Series is remarkable. Museum quality!"
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <svg viewBox="0 0 40 40" fill="none">
+                            <circle cx="20" cy="20" r="20" fill="#d1fae5"/>
+                            <circle cx="20" cy="16" r="8" fill="#34d399"/>
+                            <ellipse cx="20" cy="36" rx="12" ry="10" fill="#34d399"/>
+                        </svg>
+                    </div>
+                    <div class="author-info">
+                        <h4>David Lancaster</h4>
+                        <span>Collector, Edinburgh</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact">
+    <div class="section-container">
+        <div class="contact-grid">
+            <div class="contact-content">
+                <span class="section-tag">Get in Touch</span>
+                <h2>Let's Create<br>Something Special</h2>
+                <p>
+                    Interested in commissioning a custom character, purchasing prints, or collaborating on a project? 
+                    I'd love to hear from you.
+                </p>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Email</h4>
+                            <a href="/cdn-cgi/l/email-protection#225243574e4b4c47514a4750505b11101b624a4d564f434b4e0c414d4f"><span class="__cf_email__" data-cfemail="c5b5a4b0a9acaba0b6ada0b7b7bcf6f7fc85adaab1a8a4aca9eba6aaa8">paulinesherry329@hotmail.com</span></a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Studio</h4>
+                            <span>Bearsden, Glasgow</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Commission Timeline</h4>
+                            <span>2-4 weeks for custom pieces</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-form-wrapper">
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Jane Smith">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required placeholder="jane@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">What can I help with?</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select an option...</option>
+                            <option value="commission">Custom Commission</option>
+                            <option value="purchase">Purchase Enquiry</option>
+                            <option value="collaboration">Collaboration</option>
+                            <option value="workshop">Workshop Booking</option>
+                            <option value="other">Something Else</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" rows="5" required placeholder="Tell me about your project or question..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span>Send Message</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-text">Pauline's</span>
+                    <span class="logo-sub">Palette</span>
+                </div>
+                <p>Handcrafted story characters and whimsical illustrations, made with love in Scotland.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#about">About Me</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Collections</h4>
+                    <ul>
+                        <li><a href="#">Fairy Tale Classics</a></li>
+                        <li><a href="#">Nursery Rhyme Friends</a></li>
+                        <li><a href="#">Magical Creatures</a></li>
+                        <li><a href="#">Heritage Series</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Pauline's Palette Art. All rights reserved.</p>
+            <p>Crafted with love in Scotland</p>
+        </div>
+    </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
+<script>
+    // ===== INTRO ANIMATION LOGIC =====
+    (function() {
+        const introOverlay = document.getElementById('introOverlay');
+        const body = document.body;
+        
+        // Check if intro was already shown this session
+        const introShown = sessionStorage.getItem('introShown');
+        
+        if (introShown) {
+            // Skip intro - hide overlay immediately
+            introOverlay.classList.add('hidden');
+            body.classList.remove('intro-active');
+        } else {
+            // Show intro - auto-open after 2 seconds
+            setTimeout(() => {
+                openCurtains();
+            }, 2000);
+        }
+        
+        function openCurtains() {
+            introOverlay.classList.add('open');
+            // Mark intro as shown
+            sessionStorage.setItem('introShown', 'true');
+            
+            // After animation completes, clean up
+            setTimeout(() => {
+                introOverlay.classList.add('hidden');
+                body.classList.remove('intro-active');
+            }, 3000); // 2s curtain animation + 1s fade out
+        }
+        
+        // Global function for skip button
+        window.skipIntro = function() {
+            openCurtains();
+        };
+    })();
+</script>
+</body>
+</html>
