@@ -133,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = document.getElementById('name').value;
             const submitBtn = contactForm.querySelector('button[type="submit"]');
             const originalContent = submitBtn.innerHTML;
+            const formMessage = document.getElementById('formMessage');
             
             // Show sending state
             submitBtn.innerHTML = `
@@ -157,17 +158,16 @@ document.addEventListener('DOMContentLoaded', () => {
             document.head.appendChild(style);
             
             try {
-                // Submit form data to Formspree without redirect
+                // Submit form data via AJAX
                 const formData = new FormData(contactForm);
-                const response = await fetch('https://formspree.io/f/xqardadd', {
+                const response = await fetch('send-email.php', {
                     method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    body: formData
                 });
                 
-                if (response.ok) {
+                const result = await response.json();
+                
+                if (result.success) {
                     // Show success message
                     submitBtn.innerHTML = `
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -177,8 +177,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     submitBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
                     
-                    // Show confirmation alert with sender's name
-                    alert(`Dear ${name}, your message has been sent to Pauline. Thank you for reaching out!`);
+                    // Show success message
+                    formMessage.style.display = 'block';
+                    formMessage.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+                    formMessage.style.color = 'white';
+                    formMessage.textContent = `Thank you ${name}! Your message has been sent to Pauline. She'll get back to you soon!`;
                     
                     // Reset form after success
                     setTimeout(() => {
@@ -186,9 +189,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         submitBtn.style.background = '';
                         submitBtn.disabled = false;
                         contactForm.reset();
-                    }, 3000);
+                        formMessage.style.display = 'none';
+                    }, 5000);
                 } else {
-                    throw new Error('Form submission failed');
+                    throw new Error(result.message || 'Form submission failed');
                 }
             } catch (error) {
                 // Show error message
@@ -202,7 +206,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 submitBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
                 
-                alert('Sorry, there was an error sending your message. Please try again.');
+                formMessage.style.display = 'block';
+                formMessage.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+                formMessage.style.color = 'white';
+                formMessage.textContent = 'Sorry, there was an error sending your message. Please try again or email directly at paulinesherry329@hotmail.com';
                 
                 setTimeout(() => {
                     submitBtn.innerHTML = originalContent;

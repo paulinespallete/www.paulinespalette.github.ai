@@ -831,7 +831,7 @@ I look forward to hearing from you!
                         </div>
                         <div>
                             <h4>Email</h4>
-<p>paulinesherry329@hotmail.com</p>
+<p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0d7d6c78616463687e65687f7f743e3f344d656279606c6461236e6260">[email&#160;protected]</a></p>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -861,10 +861,7 @@ I look forward to hearing from you!
                 </div>
             </div>
             <div class="contact-form-wrapper">
-                <form class="contact-form" id="contactForm" action="https://formspree.io/f/xqardadd" method="POST">
-                    <!-- Hidden field to ensure emails go to correct address -->
-                    <input type="hidden" name="_to" value="paulinesherry329@hotmail.com">
-                    <input type="hidden" name="_subject" value="New Contact Form Message">
+                <form class="contact-form" id="contactForm" method="POST" action="send-email.php">
                     <div class="form-group">
                         <label for="name">Your Name</label>
                         <input type="text" id="name" name="name" required placeholder="Jane Smith">
@@ -877,11 +874,11 @@ I look forward to hearing from you!
                         <label for="subject">What can I help with?</label>
                         <select id="subject" name="subject" required>
                             <option value="">Select an option...</option>
-                            <option value="commission">Custom Commission</option>
-                            <option value="purchase">Purchase Enquiry</option>
-                            <option value="collaboration">Collaboration</option>
-                            <option value="workshop">Workshop Booking</option>
-                            <option value="other">Something Else</option>
+                            <option value="Custom Commission">Custom Commission</option>
+                            <option value="Purchase Enquiry">Purchase Enquiry</option>
+                            <option value="Collaboration">Collaboration</option>
+                            <option value="Workshop Booking">Workshop Booking</option>
+                            <option value="Something Else">Something Else</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -896,6 +893,7 @@ I look forward to hearing from you!
                         </svg>
                     </button>
                 </form>
+                <div id="formMessage" style="display: none; margin-top: 20px; padding: 15px; border-radius: 8px; text-align: center;"></div>
             </div>
         </div>
     </div>
@@ -941,7 +939,7 @@ I look forward to hearing from you!
     </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
 <script>
     // ===== INTRO ANIMATION LOGIC =====
     (function() {
@@ -970,15 +968,4 @@ I look forward to hearing from you!
             // After animation completes, clean up
             setTimeout(() => {
                 introOverlay.classList.add('hidden');
-                body.classList.remove('intro-active');
-            }, 3000); // 2s curtain animation + 1s fade out
-        }
-        
-        // Global function for skip button
-        window.skipIntro = function() {
-            openCurtains();
-        };
-    })();
-</script>
-</body>
-</html>
+                body.classList.remove('intro-active')
