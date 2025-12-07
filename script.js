@@ -166,8 +166,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const mailtoBody = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`);
             const mailtoLink = `mailto:paulinesherry329@hotmail.com?subject=${mailtoSubject}&body=${mailtoBody}`;
             
-            // Open email client
-            window.location.href = mailtoLink;
+            // Open email client - using window.open for better compatibility
+            try {
+                window.open(mailtoLink, '_blank');
+            } catch (error) {
+                // Fallback for browsers that block window.open
+                window.location.href = mailtoLink;
+            }
             
             setTimeout(() => {
                 // Show confirmation message with sender's name
